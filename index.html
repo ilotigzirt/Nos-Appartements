@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IL'Ô TIGZIRT — Nos Appartements</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  :root { --blue: #1B3A6B; --gold: #C49A3C; --gold-light: #F5ECD6; --blue-light: #E8EDF5; }
+  body { background: #f5f5f5; }
+  .app { background: #fff; min-height: 100vh; max-width: 390px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { background: var(--blue); padding: 28px 20px 24px; text-align: center; }
+  .header-logo { width: 56px; height: 56px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; }
+  .header h1 { color: #fff; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+  .header p { color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 4px; }
+  .header-badge { display: inline-block; background: var(--gold); color: #fff; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-top: 10px; }
+
+  /* HOME */
+  .home-view { padding-bottom: 40px; }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1.2px; padding: 24px 20px 12px; }
+
+  /* APARTMENT CARDS on home */
+  .apt-cards { display: flex; flex-direction: column; gap: 14px; padding: 0 16px; }
+  .apt-card {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 0.5px solid #e0e0e0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  .apt-card-thumb {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, var(--blue-light) 0%, #c8d8f0 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    position: relative;
+  }
+  .apt-card-thumb-placeholder {
+    width: 100%; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    position: relative;
+  }
+  .apt-card-thumb-placeholder.f2 { background: linear-gradient(135deg, #d4e4f7 0%, #a8c4e8 100%); }
+  .apt-card-thumb-placeholder.f3 { background: linear-gradient(135deg, #c8d8f0 0%, #8fb4e0 100%); }
+  .apt-card-thumb-placeholder.balcon { background: linear-gradient(135deg, #f5ecd6 0%, #e8d4a8 100%); }
+  .apt-card-thumb-placeholder.terrasse { background: linear-gradient(135deg, #e8f0d4 0%, #c4d8a0 100%); }
+
+  .apt-card-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--blue);
+    color: #fff; font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .apt-card-badge.gold { background: var(--gold); }
+
+  .photo-count-badge {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(0,0,0,0.5);
+    color: #fff; font-size: 11px; font-weight: 500;
+    padding: 3px 8px; border-radius: 20px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .apt-card-info { padding: 14px 16px 16px; }
+  .apt-card-title { font-size: 16px; font-weight: 600; color: var(--blue); }
+  .apt-card-desc { font-size: 13px; color: #666; margin-top: 4px; line-height: 1.5; }
+  .apt-card-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .tag { background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+  .tag.gold { background: var(--gold-light); color: #8a6200; }
+  .apt-card-cta { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .apt-card-photos { font-size: 12px; color: #999; display: flex; align-items: center; gap: 4px; }
+
+  .card-price-block { padding: 10px 16px 0; border-top: 0.5px solid #f0f0f0; margin-top: 8px; }
+  .card-price-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; }
+  .card-price-row .season { color: #888; display: flex; align-items: center; gap: 5px; }
+  .card-price-row .amount { color: var(--blue); font-weight: 600; }
+  .euro-price { font-size: 11px; color: #aaa; margin-left: 4px; }
+  .card-price-note { font-size: 11px; color: var(--gold); padding: 4px 0 8px; }
+
+  .card-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-photos { flex: 1; background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 10px 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .btn-whatsapp { flex: 1; background: #25D366; color: #fff; border: none; border-radius: 10px; padding: 10px 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
+  .see-btn { background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+  /* PANEL */
+  .panel { display: none; }
+  .panel.active { display: block; padding-bottom: 40px; }
+
+  .back-btn { display: flex; align-items: center; gap: 8px; padding: 14px 16px; color: var(--blue); font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 0.5px solid #eee; -webkit-tap-highlight-color: transparent; }
+
+  .panel-header { padding: 20px 20px 8px; }
+  .panel-header h2 { font-size: 20px; font-weight: 700; color: var(--blue); }
+  .panel-header p { font-size: 13px; color: #888; margin-top: 4px; }
+  .panel-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* CAROUSEL */
+  .carousel-wrap { position: relative; margin: 16px 0 0; }
+  .carousel-hint { text-align: center; font-size: 12px; color: #aaa; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+  .carousel {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    padding: 0 16px 0 16px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .carousel-slide {
+    flex: 0 0 calc(85%);
+    scroll-snap-align: start;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel-slide:last-child { margin-right: 16px; }
+
+  .slide-img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .slide-placeholder {
+    width: 100%;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #fff;
+    font-weight: 500;
+  }
+  .slide-placeholder i { font-size: 36px; opacity: 0.7; }
+  .slide-placeholder span { opacity: 0.85; }
+
+  .slide-label {
+    position: absolute; bottom: 34px; left: 12px;
+    background: rgba(0,0,0,0.45);
+    color: #fff; font-size: 11px; font-weight: 500;
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .slide-num {
+    position: absolute; bottom: 10px; right: 12px;
+    background: rgba(0,0,0,0.45);
+    color: #fff; font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px;
+  }
+
+  /* DOTS */
+  .carousel-dots { display: flex; justify-content: center; gap: 5px; margin: 12px 0 20px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ddd; transition: all 0.2s; }
+  .dot.active { width: 18px; border-radius: 3px; background: var(--blue); }
+  .dot.gold-active { background: var(--gold); width: 18px; border-radius: 3px; }
+
+  /* INFO SECTION */
+  .apt-info-section { margin: 0 16px 16px; padding: 16px; background: var(--blue-light); border-radius: 14px; }
+  .apt-info-section h3 { font-size: 14px; font-weight: 600; color: var(--blue); margin-bottom: 10px; }
+  .apt-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #444; padding: 5px 0; }
+  .apt-feature i { color: var(--gold); font-size: 16px; width: 20px; }
+
+
+  .price-block { margin: 0 16px 16px; border-radius: 14px; overflow: hidden; border: 0.5px solid #e0e0e0; }
+  .price-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid #f0f0f0; }
+  .price-row:last-child { border-bottom: none; }
+  .price-season { flex: 1; font-size: 13px; color: #666; display: flex; align-items: center; gap: 6px; }
+  .price-season i { font-size: 15px; }
+  .price-amount { font-size: 16px; font-weight: 700; color: var(--blue); }
+  .price-unit { font-size: 11px; color: #aaa; margin-left: 3px; }
+  .price-note { padding: 10px 16px; background: var(--gold-light); font-size: 12px; color: #7a5c1a; display: flex; align-items: center; gap: 6px; }
+  .cta-section { margin: 0 16px; }
+  .cta-btn { width: 100%; background: var(--gold); border: none; border-radius: 14px; padding: 16px; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-logo">🏝️</div>
+    <h1>IL'Ô TIGZIRT</h1>
+    <p>Découvrez nos appartements</p>
+    <span class="header-badge">Tigzirt, Algérie ✦</span>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="home-view">
+    <div class="section-label">Nos appartements</div>
+    <div class="apt-cards">
+
+      <!-- F2 sans vue -->
+      <div class="apt-card" onclick="showPanel('f2')">
+        <div style="position:relative;">
+          <img src="./01_chambre.jpg" style="width:100%;height:180px;object-fit:cover;display:block;border-radius:18px 18px 0 0;" alt="F2">
+          <span class="apt-card-badge">F2</span>
+          <span class="photo-count-badge"><i class="ti ti-camera"></i> 10 photos</span>
+        </div>
+        <div class="apt-card-info">
+          <div class="apt-card-title">Appartement F2</div>
+          <div class="apt-card-desc">Appartement 2 pièces confortable, idéal pour un couple ou un court séjour.</div>
+          <div class="apt-card-tags">
+            <span class="tag"><i class="ti ti-users"></i> 4–5 pers.</span>
+            <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+            <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+          </div>
+          <div class="card-price-block">
+            <div class="card-price-row">
+              <span class="season">🌤 Moy. saison</span>
+              <span class="amount">6 000 DZD <span class="euro-price">≈ 29 €</span></span>
+            </div>
+            <div class="card-price-row">
+              <span class="season">⭐ Haute saison</span>
+              <span class="amount">8 000 DZD <span class="euro-price">≈ 29 €</span></span>
+            </div>
+            <div class="card-price-note">📅 Haute saison à partir du 3 juillet</div>
+          </div>
+          <div class="card-btns">
+            <button class="btn-photos" onclick="showPanel('f2')"><i class="ti ti-photo"></i> Voir les photos</button>
+            <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F2." target="_blank" class="btn-whatsapp"><i class="ti ti-brand-whatsapp"></i> Je veux cet appart</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- F3 sans vue -->
+      <div class="apt-card" onclick="showPanel('f3')">
+        <div style="position:relative;">
+          <img src="./f3_01_chambre_parentale.jpg" style="width:100%;height:180px;object-fit:cover;display:block;border-radius:18px 18px 0 0;" alt="F3">
+          <span class="apt-card-badge">F3</span>
+          <span class="photo-count-badge"><i class="ti ti-camera"></i> 11 photos</span>
+        </div>
+        <div class="apt-card-info">
+          <div class="apt-card-title">Appartement F3</div>
+          <div class="apt-card-desc">Appartement 3 pièces spacieux pour toute la famille.</div>
+          <div class="apt-card-tags">
+            <span class="tag"><i class="ti ti-users"></i> 6–7 pers.</span>
+            <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+            <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+          </div>
+          <div class="card-price-block">
+            <div class="card-price-row">
+              <span class="season">🌤 Moy. saison</span>
+              <span class="amount">6 500 DZD <span class="euro-price">≈ 24 €</span></span>
+            </div>
+            <div class="card-price-row">
+              <span class="season">⭐ Haute saison</span>
+              <span class="amount">10 000 DZD <span class="euro-price">≈ 36 €</span></span>
+            </div>
+            <div class="card-price-note">📅 Haute saison à partir du 3 juillet</div>
+          </div>
+          <div class="card-btns">
+            <button class="btn-photos" onclick="showPanel('f3')"><i class="ti ti-photo"></i> Voir les photos</button>
+            <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20Balcon." target="_blank" class="btn-whatsapp"><i class="ti ti-brand-whatsapp"></i> Je veux cet appart</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- F3 balcon vue mer -->
+      <div class="apt-card" onclick="showPanel('balcon')">
+        <div style="position:relative;">
+          <img src="./balcon_08_vue_mer.jpg" style="width:100%;height:180px;object-fit:cover;display:block;border-radius:18px 18px 0 0;" alt="F3 balcon vue mer">
+          <span class="apt-card-badge gold">Vue mer</span>
+          <span class="photo-count-badge"><i class="ti ti-camera"></i> 13 photos</span>
+        </div>
+        <div class="apt-card-info">
+          <div class="apt-card-title">F3 — Balcon vue mer</div>
+          <div class="apt-card-desc">Profitez d'un balcon avec vue imprenable sur la Méditerranée.</div>
+          <div class="apt-card-tags">
+            <span class="tag"><i class="ti ti-users"></i> 6–7 pers.</span>
+            <span class="tag gold"><i class="ti ti-beach"></i> Vue mer</span>
+            <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+            <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+          </div>
+          <div class="card-price-block">
+            <div class="card-price-row">
+              <span class="season">🌤 Moy. saison</span>
+              <span class="amount">8 000 DZD <span class="euro-price">≈ 29 €</span></span>
+            </div>
+            <div class="card-price-row">
+              <span class="season">⭐ Haute saison</span>
+              <span class="amount">12 000 DZD <span class="euro-price">≈ 43 €</span></span>
+            </div>
+            <div class="card-price-note">📅 Haute saison à partir du 3 juillet</div>
+          </div>
+          <div class="card-btns">
+            <button class="btn-photos" onclick="showPanel('balcon')"><i class="ti ti-photo"></i> Voir les photos</button>
+            <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20avec%20balcon%20vue%20mer." target="_blank" class="btn-whatsapp"><i class="ti ti-brand-whatsapp"></i> Je veux cet appart</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- F3 terrasse vue mer -->
+      <div class="apt-card" onclick="showPanel('terrasse')">
+        <div style="position:relative;">
+          <img src="./terrasse_08_terrasse2.jpg" style="width:100%;height:180px;object-fit:cover;display:block;border-radius:18px 18px 0 0;" alt="F3 terrasse vue mer">
+          <span class="apt-card-badge gold">Vue mer</span>
+          <span class="photo-count-badge"><i class="ti ti-camera"></i> 15 photos</span>
+        </div>
+        <div class="apt-card-info">
+          <div class="apt-card-title">F3 — Terrasse vue mer</div>
+          <div class="apt-card-desc">Une grande terrasse privée face à la mer pour des soirées inoubliables.</div>
+          <div class="apt-card-tags">
+            <span class="tag"><i class="ti ti-users"></i> 5–7 pers.</span>
+            <span class="tag gold"><i class="ti ti-beach"></i> Vue mer</span>
+            <span class="tag"><i class="ti ti-fence"></i> Terrasse</span>
+            <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+          </div>
+          <div class="card-price-block">
+            <div class="card-price-row">
+              <span class="season">🌤 Moy. saison</span>
+              <span class="amount">10 000 DZD <span class="euro-price">≈ 36 €</span></span>
+            </div>
+            <div class="card-price-row">
+              <span class="season">⭐ Haute saison</span>
+              <span class="amount">15 000 DZD <span class="euro-price">≈ 54 €</span></span>
+            </div>
+            <div class="card-price-note">📅 Haute saison à partir du 3 juillet</div>
+          </div>
+          <div class="card-btns">
+            <button class="btn-photos" onclick="showPanel('terrasse')"><i class="ti ti-photo"></i> Voir les photos</button>
+            <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20avec%20terrasse%20vue%20mer." target="_blank" class="btn-whatsapp"><i class="ti ti-brand-whatsapp"></i> Je veux cet appart</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL F2 -->
+  <div id="panel-f2" class="panel">
+    <div class="back-btn" onclick="showHome()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <div class="panel-header">
+      <h2>Appartement F2</h2>
+      <p>2 pièces · jusqu'à 5 personnes</p>
+      <div class="panel-tags">
+        <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+        <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+        <span class="tag"><i class="ti ti-tools-kitchen-2"></i> Cuisine équipée</span>
+      </div>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-hint"><i class="ti ti-hand-finger"></i> Glissez pour voir les photos</div>
+      <div class="carousel" id="carousel-f2" onscroll="updateDots('f2', this)">
+        <div class="carousel-slide">
+          <img src="./01_chambre.jpg" class="slide-img" alt="Chambre parentale" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Chambre parentale</span>
+          <span class="slide-num">1 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./02_sejour.jpg" class="slide-img" alt="Séjour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Séjour</span>
+          <span class="slide-num">2 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./03_cuisine.jpg" class="slide-img" alt="Coin cuisine" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Coin cuisine</span>
+          <span class="slide-num">3 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./04_sdb.jpg" class="slide-img" alt="Salle de bain" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Salle de bain</span>
+          <span class="slide-num">4 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./05_wc.jpg" class="slide-img" alt="WC séparé" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">WC séparé</span>
+          <span class="slide-num">5 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./06_escalier.jpg" class="slide-img" alt="Escalier" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Escalier</span>
+          <span class="slide-num">6 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./07_parking_jour.jpg" class="slide-img" alt="Parking — jour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Parking — jour</span>
+          <span class="slide-num">7 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./08_parking_nuit.jpg" class="slide-img" alt="Parking — nuit" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">Parking — nuit</span>
+          <span class="slide-num">8 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./09_residence.jpg" class="slide-img" alt="La résidence" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">La résidence</span>
+          <span class="slide-num">9 / 10</span>
+        </div>
+        <div class="carousel-slide">
+          <img src="./10_plage.jpg" class="slide-img" alt="La plage" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;">
+          <span class="slide-label">La plage</span>
+          <span class="slide-num">10 / 10</span>
+        </div>
+      </div>
+      <div class="carousel-dots" id="dots-f2">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="apt-info-section">
+      <h3>Équipements</h3>
+      <div class="apt-feature"><i class="ti ti-snowflake"></i> Climatisation</div>
+      <div class="apt-feature"><i class="ti ti-wifi"></i> 4G / Wi-Fi inclus</div>
+      <div class="apt-feature"><i class="ti ti-tools-kitchen-2"></i> Cuisine entièrement équipée</div>
+      <div class="apt-feature"><i class="ti ti-device-tv"></i> Télévision</div>
+      <div class="apt-feature"><i class="ti ti-wash-machine"></i> Machine à laver</div>
+      <div class="apt-feature"><i class="ti ti-walk"></i> À 5 min de la plage (300 m) — Sable et Galet</div>
+      <div class="apt-feature"><i class="ti ti-baby-carriage"></i> Lit bébé à la demande</div>
+      <div class="apt-feature"><i class="ti ti-bath"></i> Serviettes, sèche-cheveux & fer à repasser à la demande</div>
+    </div>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-sun"></i> Moyenne saison</span>
+        <span class="price-amount">5 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 29 €</span></span>
+      </div>
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-star"></i> Haute saison</span>
+        <span class="price-amount">8 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 29 €</span></span>
+      </div>
+      <div class="price-note"><i class="ti ti-calendar"></i> Haute saison à partir du 3 juillet</div>
+    </div>
+    <div class="cta-section">
+      <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F2." target="_blank" class="cta-btn">
+        <i class="ti ti-brand-whatsapp"></i> Demander ce logement
+      </a>
+    </div>
+  </div>
+
+  <!-- PANEL F3 -->
+  <div id="panel-f3" class="panel">
+    <div class="back-btn" onclick="showHome()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <div class="panel-header">
+      <h2>F3 — Balcon</h2>
+      <p>3 pièces · jusqu'à 7 personnes</p>
+      <div class="panel-tags">
+        <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+        <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+        <span class="tag"><i class="ti ti-tools-kitchen-2"></i> Cuisine équipée</span>
+      </div>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-hint"><i class="ti ti-hand-finger"></i> Glissez pour voir les photos</div>
+      <div class="carousel" id="carousel-f3" onscroll="updateDots('f3', this)">
+        <div class="carousel-slide"><img src="./f3_01_chambre_parentale.jpg" class="slide-img" alt="Chambre parentale" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre parentale</span><span class="slide-num">1 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_02_chambre_secondaire.jpg" class="slide-img" alt="Chambre secondaire" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre secondaire</span><span class="slide-num">2 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_03_sejour.jpg" class="slide-img" alt="Séjour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Séjour</span><span class="slide-num">3 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_04_sdb.jpg" class="slide-img" alt="Salle de bain" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Salle de bain</span><span class="slide-num">4 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_05_wc.jpg" class="slide-img" alt="WC séparé" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">WC séparé</span><span class="slide-num">5 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_06_cuisine.jpg" class="slide-img" alt="Cuisine" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Cuisine</span><span class="slide-num">6 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_07_parking_jour.jpg" class="slide-img" alt="Parking — jour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — jour</span><span class="slide-num">7 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_08_parking_nuit.jpg" class="slide-img" alt="Parking — nuit" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — nuit</span><span class="slide-num">8 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_09_escalier.jpg" class="slide-img" alt="Escalier" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Escalier</span><span class="slide-num">9 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_10_residence.jpg" class="slide-img" alt="La résidence" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La résidence</span><span class="slide-num">10 / 11</span></div>
+        <div class="carousel-slide"><img src="./f3_11_plage.jpg" class="slide-img" alt="La plage" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La plage</span><span class="slide-num">11 / 11</span></div>
+      </div>
+      <div class="carousel-dots" id="dots-f3">
+                <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="apt-info-section">
+      <h3>Équipements</h3>
+      <div class="apt-feature"><i class="ti ti-snowflake"></i> Climatisation</div>
+      <div class="apt-feature"><i class="ti ti-wifi"></i> 4G / Wi-Fi inclus</div>
+      <div class="apt-feature"><i class="ti ti-tools-kitchen-2"></i> Cuisine entièrement équipée</div>
+      <div class="apt-feature"><i class="ti ti-device-tv"></i> Télévision</div>
+      <div class="apt-feature"><i class="ti ti-wash-machine"></i> Machine à laver</div>
+      <div class="apt-feature"><i class="ti ti-walk"></i> À 5 min de la plage (300 m) — Sable et Galet</div>
+      <div class="apt-feature"><i class="ti ti-baby-carriage"></i> Lit bébé à la demande</div>
+      <div class="apt-feature"><i class="ti ti-bath"></i> Serviettes, sèche-cheveux & fer à repasser à la demande</div>
+    </div>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-sun"></i> Moyenne saison</span>
+        <span class="price-amount">5 500<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 24 €</span></span>
+      </div>
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-star"></i> Haute saison</span>
+        <span class="price-amount">10 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 36 €</span></span>
+      </div>
+      <div class="price-note"><i class="ti ti-calendar"></i> Haute saison à partir du 3 juillet</div>
+    </div>
+    <div class="cta-section">
+      <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20Balcon." target="_blank" class="cta-btn">
+        <i class="ti ti-brand-whatsapp"></i> Demander ce logement
+      </a>
+    </div>
+  </div>
+
+    <!-- PANEL BALCON -->
+  <div id="panel-balcon" class="panel">
+    <div class="back-btn" onclick="showHome()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <div class="panel-header">
+      <h2>F3 — Balcon vue mer</h2>
+      <p>3 pièces · jusqu'à 7 personnes</p>
+      <div class="panel-tags">
+        <span class="tag gold"><i class="ti ti-beach"></i> Vue mer</span>
+        <span class="tag"><i class="ti ti-snowflake"></i> Climatisé</span>
+        <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+      </div>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-hint"><i class="ti ti-hand-finger"></i> Glissez pour voir les photos</div>
+      <div class="carousel" id="carousel-balcon" onscroll="updateDots('balcon', this)">
+        <div class="carousel-slide"><img src="./balcon_01_chambre_parentale.jpg" class="slide-img" alt="Chambre parentale" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre parentale</span><span class="slide-num">1 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_02_chambre_secondaire.jpg" class="slide-img" alt="Chambre secondaire" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre secondaire</span><span class="slide-num">2 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_03_sejour.jpg" class="slide-img" alt="Séjour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Séjour</span><span class="slide-num">3 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_04_cuisine.jpg" class="slide-img" alt="Cuisine" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Cuisine</span><span class="slide-num">4 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_05_sdb.jpg" class="slide-img" alt="Salle de bain" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Salle de bain</span><span class="slide-num">5 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_06_wc.jpg" class="slide-img" alt="WC séparé" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">WC séparé</span><span class="slide-num">6 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_07_balcon.jpg" class="slide-img" alt="Le balcon" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Le balcon</span><span class="slide-num">7 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_08_vue_mer.jpg" class="slide-img" alt="Vue sur mer" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Vue sur mer</span><span class="slide-num">8 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_09_escalier.jpg" class="slide-img" alt="Escalier" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Escalier</span><span class="slide-num">9 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_10_residence.jpg" class="slide-img" alt="La résidence" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La résidence</span><span class="slide-num">10 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_11_parking_jour.jpg" class="slide-img" alt="Parking — jour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — jour</span><span class="slide-num">11 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_12_parking_nuit.jpg" class="slide-img" alt="Parking — nuit" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — nuit</span><span class="slide-num">12 / 13</span></div>
+        <div class="carousel-slide"><img src="./balcon_13_plage.jpg" class="slide-img" alt="La plage" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La plage</span><span class="slide-num">13 / 13</span></div>
+      </div>
+      <div class="carousel-dots" id="dots-balcon">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="apt-info-section">
+      <h3>Équipements</h3>
+      <div class="apt-feature"><i class="ti ti-beach"></i> Vue mer depuis le balcon</div>
+      <div class="apt-feature"><i class="ti ti-snowflake"></i> Climatisation</div>
+      <div class="apt-feature"><i class="ti ti-wifi"></i> 4G / Wi-Fi inclus</div>
+      <div class="apt-feature"><i class="ti ti-tools-kitchen-2"></i> Cuisine entièrement équipée</div>
+      <div class="apt-feature"><i class="ti ti-device-tv"></i> Télévision</div>
+      <div class="apt-feature"><i class="ti ti-wash-machine"></i> Machine à laver</div>
+      <div class="apt-feature"><i class="ti ti-walk"></i> À 5 min de la plage (300 m) — Sable et Galet</div>
+      <div class="apt-feature"><i class="ti ti-baby-carriage"></i> Lit bébé à la demande</div>
+      <div class="apt-feature"><i class="ti ti-bath"></i> Serviettes, sèche-cheveux & fer à repasser à la demande</div>
+    </div>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-sun"></i> Moyenne saison</span>
+        <span class="price-amount">8 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 29 €</span></span>
+      </div>
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-star"></i> Haute saison</span>
+        <span class="price-amount">12 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 43 €</span></span>
+      </div>
+      <div class="price-note"><i class="ti ti-calendar"></i> Haute saison à partir du 3 juillet</div>
+    </div>
+    <div class="cta-section">
+      <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20avec%20balcon%20vue%20mer." target="_blank" class="cta-btn">
+        <i class="ti ti-brand-whatsapp"></i> Demander ce logement
+      </a>
+    </div>
+  </div>
+
+    <!-- PANEL TERRASSE -->
+  <div id="panel-terrasse" class="panel">
+    <div class="back-btn" onclick="showHome()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <div class="panel-header">
+      <h2>F3 — Terrasse vue mer</h2>
+      <p>3 pièces · jusqu'à 7 personnes</p>
+      <div class="panel-tags">
+        <span class="tag gold"><i class="ti ti-beach"></i> Vue mer</span>
+        <span class="tag"><i class="ti ti-fence"></i> Terrasse</span>
+        <span class="tag"><i class="ti ti-wifi"></i> 4G / Wi-Fi</span>
+      </div>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-hint"><i class="ti ti-hand-finger"></i> Glissez pour voir les photos</div>
+      <div class="carousel" id="carousel-terrasse" onscroll="updateDots('terrasse', this)">
+        <div class="carousel-slide"><img src="./terrasse_01_chambre_parentale.jpg" class="slide-img" alt="Chambre parentale" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre parentale</span><span class="slide-num">1 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_02_chambre_secondaire.jpg" class="slide-img" alt="Chambre secondaire" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Chambre secondaire</span><span class="slide-num">2 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_03_sejour.jpg" class="slide-img" alt="Séjour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Séjour</span><span class="slide-num">3 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_04_cuisine.jpg" class="slide-img" alt="Cuisine" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Cuisine</span><span class="slide-num">4 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_05_sdb.jpg" class="slide-img" alt="Salle de bain" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Salle de bain</span><span class="slide-num">5 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_06_wc.jpg" class="slide-img" alt="WC séparé" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">WC séparé</span><span class="slide-num">6 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_07_terrasse1.jpg" class="slide-img" alt="La terrasse" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La terrasse</span><span class="slide-num">7 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_08_terrasse2.jpg" class="slide-img" alt="Terrasse vue mer" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Terrasse vue mer</span><span class="slide-num">8 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_09_vue_mer.jpg" class="slide-img" alt="Vue sur mer" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Vue sur mer</span><span class="slide-num">9 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_10_barbecue.jpg" class="slide-img" alt="Barbecue" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Barbecue</span><span class="slide-num">10 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_11_escalier.jpg" class="slide-img" alt="Escalier" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Escalier</span><span class="slide-num">11 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_12_parking_jour.jpg" class="slide-img" alt="Parking — jour" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — jour</span><span class="slide-num">12 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_13_parking_nuit.jpg" class="slide-img" alt="Parking — nuit" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">Parking — nuit</span><span class="slide-num">13 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_14_residence.jpg" class="slide-img" alt="La résidence" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La résidence</span><span class="slide-num">14 / 15</span></div>
+        <div class="carousel-slide"><img src="./terrasse_15_plage.jpg" class="slide-img" alt="La plage" loading="lazy" style="width:100%;height:260px;object-fit:cover;display:block;"><span class="slide-label">La plage</span><span class="slide-num">15 / 15</span></div>
+      </div>
+      <div class="carousel-dots" id="dots-terrasse">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="apt-info-section">
+      <h3>Équipements</h3>
+      <div class="apt-feature"><i class="ti ti-beach"></i> Vue mer depuis la terrasse</div>
+      <div class="apt-feature"><i class="ti ti-snowflake"></i> Climatisation</div>
+      <div class="apt-feature"><i class="ti ti-wifi"></i> 4G / Wi-Fi inclus</div>
+      <div class="apt-feature"><i class="ti ti-tools-kitchen-2"></i> Cuisine entièrement équipée</div>
+      <div class="apt-feature"><i class="ti ti-device-tv"></i> Télévision</div>
+      <div class="apt-feature"><i class="ti ti-flame"></i> Barbecue</div>
+      <div class="apt-feature"><i class="ti ti-wash-machine"></i> Machine à laver</div>
+      <div class="apt-feature"><i class="ti ti-walk"></i> À 5 min de la plage (300 m) — Sable et Galet</div>
+      <div class="apt-feature"><i class="ti ti-baby-carriage"></i> Lit bébé à la demande</div>
+      <div class="apt-feature"><i class="ti ti-bath"></i> Serviettes, sèche-cheveux & fer à repasser à la demande</div>
+    </div>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-sun"></i> Moyenne saison</span>
+        <span class="price-amount">10 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 36 €</span></span>
+      </div>
+      <div class="price-row">
+        <span class="price-season"><i class="ti ti-star"></i> Haute saison</span>
+        <span class="price-amount">15 000<span class="price-unit">DZD / nuit</span> <span class="euro-price">≈ 54 €</span></span>
+      </div>
+      <div class="price-note"><i class="ti ti-calendar"></i> Haute saison à partir du 3 juillet</div>
+    </div>
+    <div class="cta-section">
+      <a href="https://wa.me/213554875472?text=Re%20bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%28e%29%20par%20l%27appartement%20F3%20avec%20terrasse%20vue%20mer." target="_blank" class="cta-btn">
+        <i class="ti ti-brand-whatsapp"></i> Demander ce logement
+      </a>
+    </div>
+  </div>
+
+
+<script>
+function showPanel(name) {
+  document.getElementById('home').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showHome() {
+  document.getElementById('home').style.display = 'block';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  window.scrollTo(0, 0);
+}
+function updateDots(id, el) {
+  const dots = document.querySelectorAll('#dots-' + id + ' .dot');
+  const slideWidth = el.scrollWidth / 10;
+  const idx = Math.round(el.scrollLeft / slideWidth);
+  dots.forEach((d, i) => {
+    d.classList.remove('active');
+    if (i === idx) d.classList.add('active');
+  });
+}
+
+// ── CHARGEMENT PRIX DEPUIS GIST ──
+const GIST_PRIX_URL = 'https://gist.githubusercontent.com/GH-Nacer/24ecc4fc8ec3c1378f0cf6f20e2baf35/raw/gistfile1.txt';
+
+const PRIX_DEFAUT = {
+  haute_saison_debut: "3 juillet",
+  taux_change: 276,
+  appartements: {
+    f2:       { nom: "Appartement F2",        moyenne_dzd: 6000,  haute_dzd: 8000  },
+    f3:       { nom: "F3 — Balcon",           moyenne_dzd: 6500,  haute_dzd: 10000 },
+    balcon:   { nom: "F3 — Balcon vue mer",   moyenne_dzd: 8000,  haute_dzd: 12000 },
+    terrasse: { nom: "F3 — Terrasse vue mer", moyenne_dzd: 10000, haute_dzd: 15000 }
+  }
+};
+
+function formatDZD(n) { return n.toLocaleString('fr-FR') + ' DZD'; }
+function formatEUR(n) { return '≈ ' + n + ' €'; }
+
+function applyPrix(data) {
+  const hs = data.haute_saison_debut || '3 juillet';
+  const taux = data.taux_change || 276;
+  const toEUR = dzd => Math.round(dzd / taux);
+
+  const mapping = { 'panel-f2':'f2', 'panel-f3':'f3', 'panel-balcon':'balcon', 'panel-terrasse':'terrasse' };
+  Object.entries(mapping).forEach(([panelId, aptKey]) => {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    const apt = data.appartements[aptKey];
+    if (!apt) return;
+    const rows = panel.querySelectorAll('.price-row .price-amount');
+    if (rows.length >= 2) {
+      rows[0].innerHTML = formatDZD(apt.moyenne_dzd) + '<span class="price-unit"> / nuit</span> <span class="euro-price">≈ ' + toEUR(apt.moyenne_dzd) + ' €</span>';
+      rows[1].innerHTML = formatDZD(apt.haute_dzd) + '<span class="price-unit"> / nuit</span> <span class="euro-price">≈ ' + toEUR(apt.haute_dzd) + ' €</span>';
+    }
+    const notes = panel.querySelectorAll('.price-note');
+    notes.forEach(n => { if (n.textContent.includes('juillet') || n.textContent.includes('saison')) n.innerHTML = '📅 Haute saison à partir du ' + hs; });
+  });
+
+  const cardMapping = { f2:0, f3:1, balcon:2, terrasse:3 };
+  const cardBlocks = document.querySelectorAll('.card-price-block');
+  Object.entries(cardMapping).forEach(([aptKey, idx]) => {
+    const block = cardBlocks[idx];
+    if (!block) return;
+    const apt = data.appartements[aptKey];
+    if (!apt) return;
+    const amounts = block.querySelectorAll('.amount');
+    if (amounts.length >= 2) {
+      amounts[0].innerHTML = formatDZD(apt.moyenne_dzd) + ' <span class="euro-price">≈ ' + toEUR(apt.moyenne_dzd) + ' €</span>';
+      amounts[1].innerHTML = formatDZD(apt.haute_dzd) + ' <span class="euro-price">≈ ' + toEUR(apt.haute_dzd) + ' €</span>';
+    }
+    const note = block.querySelector('.card-price-note');
+    if (note) note.textContent = '📅 Haute saison à partir du ' + hs;
+  });
+}
+
+async function loadPrix() {
+  try {
+    const r = await fetch(GIST_PRIX_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    applyPrix(data);
+    console.log('✅ Prix chargés depuis le Gist');
+  } catch(e) {
+    console.warn('⚠️ Gist inaccessible, prix par défaut utilisés:', e.message);
+    applyPrix(PRIX_DEFAUT);
+  }
+}
+
+loadPrix();
+
+</script>
+</body>
+</html>
